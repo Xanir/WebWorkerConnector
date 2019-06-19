@@ -1,0 +1,38 @@
+{
+	"name": "WebWorkerConnector",
+	"description": "Simplified comunication with web workers",
+	"version": "0.0.1",
+	"homepage": "https://github.com/EnzeyNet/WebWorkerConnector",
+	"bugs": "https://github.com/EnzeyNet/WebWorkerConnector/issues",
+	"author": {
+		"name": "Joseph Aspelund",
+		"email": "enzey@enzey.net",
+		"url": "https://github.com/Xanir"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/EnzeyNet/WebWorkerConnector.git"
+	},
+	"files": [],
+	"scripts": {
+		"build-js": "browserify src/CustomWorker.js  -t babelify --outfile dist/SimplifiedWorker.js",
+		"build": "npm run build-js"
+	},
+	"dependencies": {
+		"babel-core": "6.26.3",
+		"babel-preset-env": "1.7.0",
+		"babel-preset-stage-0": "6.24.1",
+		"babel-preset-stage-2": "6.24.1",
+		"babel-preset-stage-3": "6.24.1",
+		"babelify": "8.x.x",
+		"browserify": "16.2.3"
+	},
+	"devDependencies": {},
+	"browserify": {
+		"transform": [
+			[
+				"babelify"
+			]
+		]
+	}
+}
