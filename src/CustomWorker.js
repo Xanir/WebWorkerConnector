@@ -1,6 +1,8 @@
 
 var UUID = require('./UUID');
 var workerCode = require('./worker/WorkerFunctionEmitter');
+var r = /(\/\*code\-start\*\/)((.|\n)*)(\/\*code\-end\*\/)/
+workerCode = r.exec(workerCode.toString())[2];
 
 var MIME_TYPE = 'application/javascript';
 
@@ -34,9 +36,6 @@ var processMessage = function(messageEvent) {
 
     var data = messageEvent.data;
 
-    switch (data.type) {
-        case 'function'
-    }
     if (data.type === 'function') {
         cWorker[data.name] = function() {
             var params = [];
@@ -76,8 +75,9 @@ var processMessage = function(messageEvent) {
 window.CustomWorker = function(codeBits) {
     codeBits = stringifyCodeBits(codeBits);
 
-    var workerCodeStr = workerCode.getCodeAsString();
+    var workerCodeStr = workerCode;
     codeBits.unshift(convertCodeLinksToStrings(workerCodeStr));
+    codeBits.push('\n\nregisterComplete()\n')
 
     var cWorker = this;
     var pending = {};
@@ -87,6 +87,11 @@ window.CustomWorker = function(codeBits) {
         var codeForWorker = new Blob(codeStrings, {type: MIME_TYPE});
         var codeUrl = URL.createObjectURL(codeForWorker);
 
+        var setReady = null;
+        cWorker.isReady = new Promise(function(resolve, reject) {
+            setReady = resolve;
+        });
+
         worker = new Worker(codeUrl);
         worker.onmessage = function(messageEvent) {
             var data = messageEvent.data;
@@ -94,7 +99,7 @@ window.CustomWorker = function(codeBits) {
             if (data.type === 'function') {
                 cWorker[data.name] = function() {
                     var params = [];
-                    jfor(var a of arguments) {
+                    for(var a of arguments) {
                         params.push(a);
                     }
                     var payload = {
@@ -123,6 +128,9 @@ window.CustomWorker = function(codeBits) {
                     delete pending[data.id];
                     pendingResolver(data.response)
                 }
+            }
+            if (data.type === 'complete') {
+                setReady();
             }
         }
     });

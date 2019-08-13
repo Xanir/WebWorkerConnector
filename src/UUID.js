@@ -6,7 +6,7 @@
  **/
 
 var lut = []; for (var i=0; i<256; i++) { lut[i] = (i<16?'0':'')+(i).toString(16); }
-generate = function() {
+var generate = function() {
     var d0 = Math.random()*0xffffffff|0;
     var d1 = Math.random()*0xffffffff|0;
     var d2 = Math.random()*0xffffffff|0;

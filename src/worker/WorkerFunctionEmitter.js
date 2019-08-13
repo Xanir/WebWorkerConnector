@@ -1,6 +1,6 @@
 
 module.exports = function() {
-
+/*code-start*/
     var registeredFuctions = {};
     var workerContext = this;
     workerContext.onmessage = function(messageEvent) {
@@ -38,4 +38,11 @@ module.exports = function() {
         });
     }
 
+    var registerComplete = function(eventName) {
+        workerContext.postMessage({
+            type: 'complete'
+        });
+    }
+
+/*code-end*/
 };
